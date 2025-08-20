@@ -1,7 +1,5 @@
 package com.vamsi.inventory.dto;
 
-import java.time.LocalDateTime;
-
 public class ProductResponse {
     private Long id;
     private String name;

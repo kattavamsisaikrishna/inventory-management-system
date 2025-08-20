@@ -9,7 +9,7 @@ public class ProductMapper {
    public static ProductResponse toProductResponse(Product product){
        ProductResponse productResponse = new ProductResponse();
        productResponse.setId(product.getId());
-       productResponse.setName(product.getName());
+       productResponse.setName(product.getName().trim());
        productResponse.setDescription(product.getDescription());
        productResponse.setPrice(product.getPrice());
        productResponse.setStock(product.getStock());
@@ -20,7 +20,7 @@ public class ProductMapper {
 
    public static Product toProduct(ProductRequest request){
        Product product = new Product();
-       product.setName(request.getName());
+       product.setName(request.getName().trim());
        product.setPrice(request.getPrice());
        product.setStock(request.getStock());
        product.setDescription(request.getDescription());

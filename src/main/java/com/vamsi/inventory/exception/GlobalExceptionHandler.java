@@ -44,4 +44,11 @@ public class GlobalExceptionHandler {
         errors.put("error",ex.getMessage());
         return ResponseEntity.badRequest().body(errors);
     }
+
+    @ExceptionHandler(ProductAlreadyExistsException.class)
+    public ResponseEntity<Map<String,String>> handleProductAlreadyExistsException(ProductAlreadyExistsException ex){
+        Map<String ,String> errors = new HashMap<>();
+        errors.put("error",ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errors);
+    }
 }

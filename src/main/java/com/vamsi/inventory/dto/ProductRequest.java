@@ -1,24 +1,23 @@
 package com.vamsi.inventory.dto;
 
-import com.vamsi.inventory.service.ProductService;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
 public class ProductRequest {
 
+    @NotBlank(message = "name is required")
     @Size(min = 3,max = 120,message = "Product Name must be between 3 and 120 characters")
     private String name;
 
-    @DecimalMin(value = "0.0", message = "Price must be greater than equal to 0")
-    @Digits(integer = 10, fraction = 2,message = "Price can have atmost 2 decimal places")
+    @NotNull(message = "price is required")
+    @DecimalMin(value = "0.00", message = "Price must be greater than equal to 0")
+    @Digits(integer = 12, fraction = 2,message = "Price can have atmost 2 decimal places")
     private Double price;
 
+    @NotNull(message = "stock is required")
     @Min(value = 0, message = "Stock must be positive value")
-    private int stock;
+    private Integer stock;
 
-    @Size(max = 255)
+    @Size(max = 255,message = "Description can be atmost 255 characters")
     private String description;
 
     public ProductRequest(){}

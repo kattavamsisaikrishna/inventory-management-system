@@ -3,10 +3,12 @@ package com.vamsi.inventory.service;
 import com.vamsi.inventory.dto.ProductRequest;
 import com.vamsi.inventory.dto.ProductResponse;
 import com.vamsi.inventory.entity.Product;
+import com.vamsi.inventory.exception.ProductAlreadyExistsException;
 import com.vamsi.inventory.exception.ProductNotFoundException;
 import com.vamsi.inventory.mapper.ProductMapper;
 import com.vamsi.inventory.repository.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +30,11 @@ public class ProductService {
         return responses;
     }
 
+    @Transactional
     public ProductResponse createProduct(ProductRequest request){
+        if(productRepository.existsByNameIgnoreCase(request.getName())){
+            throw new ProductAlreadyExistsException("Product with name \'"+request.getName()+"\' already exists");
+        }
         Product product = ProductMapper.toProduct(request);
         Product savedProduct = productRepository.save(product);
         return ProductMapper.toProductResponse(savedProduct);
@@ -38,5 +44,30 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(()->new ProductNotFoundException("Product Not Found With Id: "+id));
         return ProductMapper.toProductResponse(product);
+    }
+
+   @Transactional
+    public ProductResponse updateProduct(Long id, ProductRequest productRequest){
+
+        Product product = productRepository.findById(id)
+                .orElseThrow(()->new ProductNotFoundException("Product Not found with Id "+id));
+
+        if( !product.getName().equalsIgnoreCase(productRequest.getName())   && productRepository.existsByNameIgnoreCase(productRequest.getName())){
+            throw new ProductAlreadyExistsException("Product with name \'"+productRequest.getName()+"\' already exists");
+        }
+
+        product.setName(productRequest.getName());
+        product.setPrice(productRequest.getPrice());
+        product.setDescription(productRequest.getDescription());
+        product.setStock(productRequest.getStock());
+
+        productRepository.save(product);
+        return ProductMapper.toProductResponse(product);
+    }
+
+    public void deleteProductById(Long id){
+        Product product = productRepository.findById(id)
+                .orElseThrow(()->new ProductNotFoundException("Product Not Found With Id: "+id));
+        productRepository.delete(product);
     }
 }

@@ -43,4 +43,18 @@ public class ProductController {
             Long id){
         return ResponseEntity.ok(productService.getProductById(id));
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ProductResponse> updateProduct(
+            @PathVariable  @Min(value = 1, message = "Minimum Value should be 1") Long id,
+            @Valid @RequestBody ProductRequest request
+            ){
+        return ResponseEntity.ok(productService.updateProduct(id,request));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProductById(@PathVariable  @Min(value = 1, message = "Minimum Value should be 1") Long id){
+        productService.deleteProductById(id);
+        return ResponseEntity.noContent().build();
+    }
 }
