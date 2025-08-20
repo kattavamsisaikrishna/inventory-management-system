@@ -32,11 +32,11 @@ public class ProductService {
 
     @Transactional
     public ProductResponse createProduct(ProductRequest request){
-        if(productRepository.existsByNameIgnoreCase(request.getName())){
+        if(productRepository.existsByNameIgnoreCase(request.getName().trim())){
             throw new ProductAlreadyExistsException("Product with name \'"+request.getName()+"\' already exists");
         }
         Product product = ProductMapper.toProduct(request);
-        Product savedProduct = productRepository.save(product);
+        Product savedProduct = productRepository.saveAndFlush(product);
         return ProductMapper.toProductResponse(savedProduct);
     }
 
@@ -52,7 +52,7 @@ public class ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(()->new ProductNotFoundException("Product Not found with Id "+id));
 
-        if( !product.getName().equalsIgnoreCase(productRequest.getName())   && productRepository.existsByNameIgnoreCase(productRequest.getName())){
+        if( !product.getName().equalsIgnoreCase(productRequest.getName().trim())   && productRepository.existsByNameIgnoreCase(productRequest.getName())){
             throw new ProductAlreadyExistsException("Product with name \'"+productRequest.getName()+"\' already exists");
         }
 
@@ -61,10 +61,11 @@ public class ProductService {
         product.setDescription(productRequest.getDescription());
         product.setStock(productRequest.getStock());
 
-        productRepository.save(product);
+        productRepository.saveAndFlush(product); // ensures @UpdateTimeStamp is applied
         return ProductMapper.toProductResponse(product);
     }
 
+    @Transactional
     public void deleteProductById(Long id){
         Product product = productRepository.findById(id)
                 .orElseThrow(()->new ProductNotFoundException("Product Not Found With Id: "+id));
