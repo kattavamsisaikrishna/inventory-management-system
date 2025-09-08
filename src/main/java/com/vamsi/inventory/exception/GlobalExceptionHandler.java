@@ -14,6 +14,8 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
+
+    //Triggers when @Valid and @RequestBody fails
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String,String>> handleValidationErrors(MethodArgumentNotValidException ex){
         Map<String,String> errors = new HashMap<>();
@@ -23,6 +25,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errors);
     }
 
+    //Triggers when @PathVariable data type mismatch
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<Map<String,String>> handleTypeMisMatchException(MethodArgumentTypeMismatchException ex){
         Map<String,String> errors = new HashMap<>();
@@ -30,7 +33,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errors);
     }
     
-
+    //Triggers when product not found in database
     @ExceptionHandler(ProductNotFoundException.class)
     public ResponseEntity<Map<String,String>> handleProductNotFoundException(ProductNotFoundException ex){
         Map<String,String> errors = new HashMap<>();
@@ -38,6 +41,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errors);
     }
 
+    //Triggers when @PathVariable constraint is violated like @Min
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Map<String,String>> handleConstraintViolationException(ConstraintViolationException ex){
         Map<String,String> errors = new HashMap<>();
@@ -45,6 +49,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(errors);
     }
 
+    //Triggers when we try to insert or update the product name which is already present in db
     @ExceptionHandler(ProductAlreadyExistsException.class)
     public ResponseEntity<Map<String,String>> handleProductAlreadyExistsException(ProductAlreadyExistsException ex){
         Map<String ,String> errors = new HashMap<>();
