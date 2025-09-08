@@ -7,6 +7,9 @@ import com.vamsi.inventory.auth.dto.RegisterRequest;
 import com.vamsi.inventory.auth.entity.Role;
 import com.vamsi.inventory.auth.entity.User;
 import com.vamsi.inventory.auth.jwt.JwtUtil;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,4 +57,8 @@ public class AuthService {
         return new AuthResponse(token,expirsIn/1000L);
     }
 
+    public String info(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
+    }
 }
